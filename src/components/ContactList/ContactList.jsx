@@ -1,3 +1,4 @@
+import PropTypes from 'prop-types';
 import css from './ContactList.module.css';
 const ContactList = ({ getVisibleName, deleteContact }) => {
   const visibleName = getVisibleName();
@@ -5,9 +6,13 @@ const ContactList = ({ getVisibleName, deleteContact }) => {
     <ul>
       {visibleName.map(contact => {
         return (
-          <li key={contact.id}>
+          <li className={css.contactItem} key={contact.id}>
             {contact.name}: {contact.number}
-            <button type="button" onClick={() => deleteContact(contact.id)}>
+            <button
+              className={css.contactBtn}
+              type="button"
+              onClick={() => deleteContact(contact.id)}
+            >
               Delete
             </button>
           </li>
@@ -17,3 +22,8 @@ const ContactList = ({ getVisibleName, deleteContact }) => {
   );
 };
 export default ContactList;
+
+ContactList.propTypes = {
+  getVisibleName: PropTypes.func.isRequired,
+  deleteContact: PropTypes.func.isRequired,
+};

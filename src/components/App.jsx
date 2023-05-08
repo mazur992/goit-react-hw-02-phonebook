@@ -56,19 +56,21 @@ export class App extends Component {
           display: 'flex',
           justifyContent: 'center',
           alignItems: 'center',
-          fontSize: 40,
-          color: '#010101',
         }}
       >
-        <div>
-          <h1 className={css.title}>Phonebook</h1>
-          <ContactForm handleBtnNameSubmit={this.handleBtnNameSubmit} />
-          <h2>Contacts</h2>
-          <Filter value={filter} onChange={this.handleNameChange} />
-          <ContactList
-            getVisibleName={this.getVisibleName}
-            deleteContact={this.deleteContact}
-          />
+        <div className={css.appContainer}>
+          <div>
+            <h1 className={css.title}>Phonebook</h1>
+            <ContactForm handleBtnNameSubmit={this.handleBtnNameSubmit} />
+          </div>
+          <div>
+            <h2 className={css.subtitle}>Contacts</h2>
+            <Filter value={filter} onChange={this.handleNameChange} />
+            <ContactList
+              getVisibleName={this.getVisibleName}
+              deleteContact={this.deleteContact}
+            />
+          </div>
         </div>
       </div>
     );
