@@ -25,7 +25,7 @@ export class App extends Component {
     const isInclude = contacts.find(contact => contact.name === data.name);
 
     if (isInclude) {
-      Report.info(`{data.name} is already in contacts!`);
+      Report.info(data.name + ' Is already in contacts!');
       return;
     }
     this.setState(prevState => ({
