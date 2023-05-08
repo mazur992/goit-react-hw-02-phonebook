@@ -1,9 +1,10 @@
 import React, { Component } from 'react';
 import { nanoid } from 'nanoid';
 import { Report } from 'notiflix/build/notiflix-report-aio';
-import ContactForm from './ContactForm/ContactForm';
-import Filter from './Filter/Filter';
-import ContactList from './ContactList/ContactList';
+import ContactForm from './ContactForm';
+import Filter from './Filter';
+import ContactList from './ContactList';
+import css from './App.module.css';
 export class App extends Component {
   state = {
     contacts: [
@@ -35,10 +36,16 @@ export class App extends Component {
     }));
   };
   getVisibleName = () => {
-    const normilizeFilter = this.state.filter.toLocaleLowerCase();
-    return this.state.contacts.filter(contact =>
+    const { filter, contacts } = this.state;
+    const normilizeFilter = filter.toLocaleLowerCase();
+    return contacts.filter(contact =>
       contact.name.toLocaleLowerCase().includes(normilizeFilter)
     );
+  };
+  deleteContact = contactId => {
+    this.setState(prevState => ({
+      contacts: prevState.contacts.filter(contact => contact.id !== contactId),
+    }));
   };
   render() {
     const { filter } = this.state;
@@ -54,11 +61,14 @@ export class App extends Component {
         }}
       >
         <div>
-          <h1>Phonebook</h1>
+          <h1 className={css.title}>Phonebook</h1>
           <ContactForm handleBtnNameSubmit={this.handleBtnNameSubmit} />
           <h2>Contacts</h2>
           <Filter value={filter} onChange={this.handleNameChange} />
-          <ContactList getVisibleName={this.getVisibleName} />
+          <ContactList
+            getVisibleName={this.getVisibleName}
+            deleteContact={this.deleteContact}
+          />
         </div>
       </div>
     );
