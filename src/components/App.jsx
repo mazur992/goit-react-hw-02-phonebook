@@ -1,7 +1,9 @@
 import React, { Component } from 'react';
 import { nanoid } from 'nanoid';
-// import ContactForm from './ContactForm/ContactForm';
+import { Report } from 'notiflix/build/notiflix-report-aio';
+import ContactForm from './ContactForm/ContactForm';
 import Filter from './Filter/Filter';
+import ContactList from './ContactList/ContactList';
 export class App extends Component {
   state = {
     contacts: [
@@ -10,8 +12,6 @@ export class App extends Component {
       { id: 'id-3', name: 'Eden Clements', number: '645-17-79' },
       { id: 'id-4', name: 'Annie Copeland', number: '227-91-26' },
     ],
-    name: '',
-    number: '',
     filter: '',
   };
 
@@ -19,16 +19,20 @@ export class App extends Component {
     const { name, value } = event.target;
     this.setState({ [name]: value });
   };
-  handleBtnNameSubmit = event => {
-    event.preventDefault();
+  handleBtnNameSubmit = data => {
+    const { contacts } = this.state;
+    const isInclude = contacts.find(contact => contact.name === data.name);
 
+    if (isInclude) {
+      Report.info(`{data.name} is already in contacts!`);
+      return;
+    }
     this.setState(prevState => ({
       contacts: [
         ...prevState.contacts,
-        { name: this.state.name, id: nanoid(), number: this.state.number },
+        { name: data.name, id: nanoid(), number: data.number },
       ],
     }));
-    this.setState({ name: '', number: '' });
   };
   getVisibleName = () => {
     const normilizeFilter = this.state.filter.toLocaleLowerCase();
@@ -37,8 +41,7 @@ export class App extends Component {
     );
   };
   render() {
-    const { name, number, filter } = this.state;
-    const visibleName = this.getVisibleName();
+    const { filter } = this.state;
     return (
       <div
         style={{
@@ -52,56 +55,10 @@ export class App extends Component {
       >
         <div>
           <h1>Phonebook</h1>
-          <form onSubmit={this.handleBtnNameSubmit}>
-            <label htmlFor={nanoid()}>
-              Name
-              <input
-                id={nanoid()}
-                type="text"
-                name="name"
-                value={name}
-                pattern="^[a-zA-Zа-яА-Я]+(([' -][a-zA-Zа-яА-Я ])?[a-zA-Zа-яА-Я]*)*$"
-                title="Name may contain only letters, apostrophe, dash and spaces. For example Adrian, Jacob Mercer, Charles de Batz de Castelmore d'Artagnan"
-                required
-                onChange={this.handleNameChange}
-              />
-            </label>
-            <label htmlFor={nanoid()}>
-              Number
-              <input
-                id={nanoid()}
-                type="tel"
-                name="number"
-                value={number}
-                pattern="\+?\d{1,4}?[-.\s]?\(?\d{1,3}?\)?[-.\s]?\d{1,4}[-.\s]?\d{1,4}[-.\s]?\d{1,9}"
-                title="Phone number must be digits and can contain spaces, dashes, parentheses and can start with +"
-                required
-                onChange={this.handleNameChange}
-              />
-            </label>
-            <button
-              style={{
-                height: '25px',
-                width: '100px',
-              }}
-              type="submit"
-            >
-              Add contact
-            </button>
-          </form>
-          {/* <ContactForm /> */}
+          <ContactForm handleBtnNameSubmit={this.handleBtnNameSubmit} />
           <h2>Contacts</h2>
           <Filter value={filter} onChange={this.handleNameChange} />
-          {/* <ContactList /> */}
-          <ul>
-            {visibleName.map(contact => {
-              return (
-                <li key={contact.id}>
-                  {contact.name}: {contact.number}
-                </li>
-              );
-            })}
-          </ul>
+          <ContactList getVisibleName={this.getVisibleName} />
         </div>
       </div>
     );
